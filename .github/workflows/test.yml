@@ -1,4 +1,4 @@
-name: Chek
+name: Check
 on: push
 jobs:
   lint:
@@ -11,11 +11,17 @@ jobs:
       - name: Lint
         run: npm run lint
   test:
-    needs: [lint]
+    needs: [lint] # it is sayint test needs "lint" (above lint) to run
+    strategy:
+      matrix:
+        versions: [18, 20, 22]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{matrix.versions}}
       - name: Install
         run: npm ci
       - name: Test
